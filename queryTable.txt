@@ -1,0 +1,13 @@
+CREATE TABLE usuarios (
+    UsrId INT(2) NOT NULL AUTO_INCREMENT,
+    UsrName VARCHAR(30) NOT NULL,
+    UsrLogin VARCHAR(15) NOT NULL,
+    UsrPassword VARCHAR(10) NOT NULL,
+    UsrEmail VARCHAR(60) NOT NULL,
+    UsrDateBegin CHAR(10) NOT NULL,
+    UsrTimeBegin CHAR(10) NOT NULL,
+    UsrDateEnd CHAR(10) NOT NULL,
+    UsrTimeEnd CHAR(10) NOT NULL,
+    UsrStatus CHAR(1) NOT NULL,
+    PRIMARY KEY (UsrId)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
