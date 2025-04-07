@@ -14,7 +14,7 @@ if(isset($_POST["registrar"])){
     if (empty($name) || empty($username) || empty($mail) || empty($password) || empty($passwordcon)) {
         echo "<script>
                 alert('Por favor, completa todos los campos');
-                window.location = './login.php';
+                window.location = './signup.php';
             </script>";
         exit;
     }
@@ -22,7 +22,7 @@ if(isset($_POST["registrar"])){
     if (!filter_var($mail, FILTER_VALIDATE_EMAIL)) {
         echo "<script>
                 alert('El correo no es válido');
-                window.location = './login.php';
+                window.location = './signup.php';
             </script>";
         exit;
     }
@@ -30,7 +30,7 @@ if(isset($_POST["registrar"])){
     if ($password !== $passwordcon) {
         echo "<script>
                 alert('Las contraseñas no coinciden');
-                window.location = './login.php';
+                window.location = './signup.php';
             </script>";
         exit;
     }
@@ -88,7 +88,6 @@ if(isset($_POST["registrar"])){
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
     <link rel="stylesheet" href="./style.css">
-    <script src="./signup.js" defer></script>
 </head>
 
 <body>
@@ -136,47 +135,19 @@ if(isset($_POST["registrar"])){
     document.querySelector("form").addEventListener("submit", function(e) {
         const pass = document.getElementById("password").value;
         const passcon = document.getElementById("passwordcon").value;
+        const email = document.getElementById("email").value;
 
         if (pass !== passcon) {
             e.preventDefault();
             alert("Las contraseñas no coinciden.");
         }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            e.preventDefault();
+            alert("El correo no es válido.");
+        }
+
     });
 </script>
-
-<!-- <script>
-    const submitButttom = document.getElementById("submit");
-    submitButttom.addEventListener('click', () => {
-        const username = document.getElementById('username').value;
-        const password = document.getElementById('password').value;
-        const confirmPassword = document.getElementById('passwordcon').value;
-        const email = document.getElementById('email').value;
-        const data = {
-            username,
-            email,
-            password
-        }
-
-        if (password == confirmPassword) {
-            const jsonData = JSON.stringify(data);
-            fetch('/req/signup', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: jsonData
-            })
-                .then(response => {
-                    //alert('succesfull');
-                    //if(response.status == 200){
-                    //alert('succesfull');
-                    //xs}
-                })
-        }
-
-    })
-
-
-</script> -->
-
 </html>
