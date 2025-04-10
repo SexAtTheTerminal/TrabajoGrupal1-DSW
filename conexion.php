@@ -1,7 +1,7 @@
 <?php
 include 'configuration.php';
 
-$conexion = new mysqli($server, $user, $pass, $db);
+$conexion = new mysqli('localhost', 'root', '', 'phplogin');
 if (mysqli_connect_errno()) {
     echo "No conectado",mysqli_connect_error();
     exit();
