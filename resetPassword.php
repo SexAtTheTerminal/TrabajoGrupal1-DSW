@@ -19,20 +19,21 @@ if (isset($_GET['token'])) {
 
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $newPassword = trim($_POST["new_password"]);
+            $password_encripted = substr(sha1($newPassword), 0, 10);
 
             $stmtUpdate = $conexion->prepare("UPDATE usuarios SET UsrPassword = ? WHERE UsrId = ?");
-            $stmtUpdate->bind_param("si", $newPassword, $userId);
+            $stmtUpdate->bind_param("si", $password_encripted, $userId);
             $stmtUpdate->execute();
 
             $stmtUsed = $conexion->prepare("UPDATE resets SET used = 1 WHERE token = ?");
             $stmtUsed->bind_param("s", $token);
             $stmtUsed->execute();
 
-            $mensaje = "Password updated successfully.";
+            $mensaje = "Password updated successfully :)";
             $tokenValido = false;
         }
     } else {
-        $mensaje = "This link has expired or is no longer valid.";
+        $mensaje = "Este link ha expirado o no es valido.";
     }
 }
 ?>

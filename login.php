@@ -1,39 +1,81 @@
 <?php
 include 'conexion.php';
+date_default_timezone_set('America/Lima');
 
 if (!empty($_POST)) {
     $username = mysqli_real_escape_string($conexion, $_POST["username"]);
     $password = mysqli_real_escape_string($conexion, $_POST["password"]);
     $password_encripted = substr(sha1($password), 0, 10);
 
-    $sql = "SELECT UsrId FROM usuarios WHERE UsrLogin = '$username' AND UsrPassword = '$password_encripted'";
-    echo "<script>
-                alert('Hasta aca ha servido1');
-        </script>";
+    $sql = "SELECT UsrId, UsrLogin, UsrPassword, UsrStatus, UsrBadAttempts, UsrLastTry FROM usuarios WHERE UsrLogin = '$username'";
     $resultado = $conexion->query($sql);
-    echo "<script>
-                alert('Hasta aca ha servido2');
-        </script>";
     $filas = $resultado->num_rows;
-    echo "<script>
-                alert('Hasta aca ha servido $filas');
-        </script>";
-
     if($filas > 0){
         $fila = $resultado->fetch_assoc();
-        echo "<script>
-                alert('Hasta aca ha servido3');
-        </script>";
-        $_SESSION['id_usuario'] = $fila["UsrId"];
-        $_SESSION['username'] = $username;
-        header("Location: postLogin.php");
-        exit();
+        if($fila["UsrStatus"] == '0'){
+            echo "<script>
+                    alert('El usuario no esta activo, por favor contacta al administrador');
+                    window.location = './login.php';
+            </script>";
+            exit();
+        }
+        
+        $intentos = (int)$fila['UsrBadAttempts'];
+        $ultimoIntento = $fila['UsrLastTry'];
+
+        if ($ultimoIntento !== null) {
+            $timestampUltimo = strtotime($ultimoIntento);
+            $timestampAhora = time(); // timestamp actual en segundos
+
+            $diferenciaSegundos = $timestampAhora - $timestampUltimo;
+
+            if ($diferenciaSegundos > 600) { // 600 segundos = 10 minutos
+                $intentos = 0; // reiniciar intentos
+            }
+        }
+
+        $diferenciaMinutos = floor($diferenciaSegundos / 60);
+        echo "<script>alert('Han pasado $diferenciaMinutos minutos desde el último intento');</script>";
+        
+        if($fila['UsrPassword'] == $password_encripted){//Logeo exitoso wasaaa
+            $stmtUpdate =  $conexion -> prepare ("UPDATE usuarios SET UsrBadAttempts = 0, 
+            UsrLastTry = NULL WHERE UsrLogin ='$username'");
+            $stmtUpdate -> execute();
+            $_SESSION['id_usuario'] = $fila["UsrId"];
+            $_SESSION['username'] = $username;
+            header("Location: postLogin.php");
+            exit(); 
+        }else{
+            $intentos++;
+            if($intentos==5){
+                $stmtUpdate2 = $conexion -> prepare("UPDATE usuarios SET UsrStatus = 0, 
+                UsrBadAttempts = $intentos, 
+                UsrLastTry = NOW() WHERE UsrLogin = '$username'");
+                $stmtUpdate2 -> execute();
+                echo "<script>
+                        alert('Has excedido los intentos. Tu cuenta ha sido bloqueada.');
+                        window.location = './login.php';
+                </script>";
+            }else{
+                $stmtUpdate3 = $conexion -> prepare("UPDATE usuarios 
+                SET UsrBadAttempts= ?, 
+                UsrLastTry= NOW() 
+                WHERE UsrLogin = '$username'");
+                $stmtUpdate3 -> bind_param("i", $intentos);
+                $stmtUpdate3 -> execute();
+                echo "<script>
+                alert('El username o password son incorrectos.\\nIntentos restantes: " . (5 - $intentos) . ".\\nSe resetea luego de 10 minutos.');
+                window.location = './login.php';
+                </script>";
+            }
+        }
     } else {
         echo "<script>
                 alert('El username o password son incorrectos');
                 window.location = './login.php';
         </script>";
     }
+
 }
 ?>
 
