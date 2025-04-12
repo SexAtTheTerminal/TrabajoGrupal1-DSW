@@ -11,3 +11,7 @@ CREATE TABLE usuarios (
     UsrStatus CHAR(1) NOT NULL,
     PRIMARY KEY (UsrId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+ALTER TABLE usuarios
+ADD COLUMN UsrBadAttempts INT NOT NULL DEFAULT 0,
+ADD COLUMN UsrLastTry DATETIME NULL;
