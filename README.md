@@ -12,5 +12,5 @@ La aplicación web, debe además permitir:
 CADA FUNCIONALIDAD POSEE UNA CORRECTA VERIFICACIÓN DE DATOS Y TIMESTAMPS
 
 Estudiantes que trabajaron el laboratorio:
--> Cuba Garcia Gabriel Isaac
+-> Gabriel Cuba
 -> Piero Huayta
