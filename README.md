@@ -8,3 +8,5 @@ La aplicación web, debe además permitir:
 - Crear un nuevo usuario
 - Recuperar contraseña
 - Bloquear usuarios con varios intentos de acceso 
+
+CADA FUNCIONALIDAD POSEE UNA CORRECTA VERIFICACIÓN DE DATOS Y TIMESTAMPS
